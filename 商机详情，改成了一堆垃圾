@@ -1,0 +1,1127 @@
+import React, { Component } from "react";
+import { Text, View, ListView, Linking, ImageBackground, StyleSheet, Image, SectionList, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import CustomNavbar from "../../../common/customNavbar";
+import style, {
+    mainColor,
+    marginT,
+    margin,
+    font10,
+    font14,
+    font12,
+    font16,
+    marginV,
+    colorYew,
+    color666,
+    colorF5,
+    color333,
+    color999,
+    font13,
+    colorDDD,
+    font15,
+    screenW
+} from "../../../style";
+import listStyle from "../../../antStyles/listStyle";
+import { Tabs, List, Switch } from "antd-mobile";
+const Item = List.Item;
+import Popover from "../../../common/popover";
+import TimeUtil from "../../../utils/timeUtil";
+import { SwipeListView } from 'react-native-swipe-list-view';
+import BizoppDynamicContainer from "../containers/bizoppDynamicContainer";
+import Accordion from "../../../common/accordion";
+import { Button } from "antd/lib/radio";
+
+export default class bizoppDetailsComponent extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            details: '',
+            isTop: true,
+            centerTitle: "商机详情",
+            dataSource: [],
+            showPop: false,
+            dataSourceceshi:
+                { title: "商机分配", type: "nav", icon: "clue_industry", required: true, key: 'user', referto: 'user' },
+        };
+    }
+
+    renderItem = ({ item, index }) => {
+        return (
+            <Item styles={listStyle}
+                thumb={item.icon}
+                extra={item.value}
+            >
+                {item.title}
+            </Item>
+        );
+    };
+    EmptyComponent = () => {
+        return (
+            <View style={styles.empty}>
+                <Text style={styles.emptyText}>正在加载....</Text>
+            </View>
+        );
+    };
+    renderSectionHeader = ({ section }) => {
+        return <View style={{ height: 16, backgroundColor: "#f9f9f9" }} />;
+    };
+
+    keyExtractor = (data, index) => index;
+
+    separator = () => {
+        return <View style={styles.separator} />;
+    };
+
+    renderDynamic = () => {
+        const { state } = this.props.navigation;
+        var id = state.params.id;
+        return <BizoppDynamicContainer id={id ? id : ""} style={styles.dynamic} />
+    };
+
+
+    componentWillMount = () => {
+        const { bizoppDetailAction, actions } = this.props;
+        const { navigate, state } = this.props.navigation;
+        bizoppDetailAction.fetchBizoppDetaill({ id: state.params.id })
+        bizoppDetailAction.fetchBizoppStages({ id: state.params.id })
+        actions.fetchBizoppDetailsRelated({ id: state.params.id })
+    }
+    componentWillReceiveProps = (nextProps) => {
+
+    }
+    updateDetails = (id) => {
+        console.log("商机详情更新中..." + id);
+        const { bizoppDetailAction } = this.props;
+        bizoppDetailAction.fetchBizoppDetaill({ id: id })
+
+    }
+
+    referOnOk = (item, key) => {
+        const { actions } = this.props;
+        const { navigate, state } = this.props.navigation;
+        actions.referOnOk(item, key, state.params.id);
+    }
+
+    referToNew = (referto) => {
+        let title = "联系人", key;
+        const { navigate, state } = this.props.navigation;
+
+        if (referto == "User") {
+            title = "参与人"
+            navigate("refer", {
+                referto,
+                title,
+                customerId: "",
+                classItemPressed: this.referOnOk,
+                key: referto,
+                item: {}
+            });
+        } else {
+            navigate("bizoppReferView", {
+                referto,
+                title,
+                bizoppId: state.params.id,
+                customerId: state.params.customerId,
+                classItemPressed: this.referOnOk,
+                key: referto,
+                item: {}
+            });
+        }
+
+
+    }
+
+    renderRelated = (related) => {
+
+        //const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+        return (<View>
+            <View style={{ backgroundColor: "white", marginTop: margin }}>
+                <View style={styles.headerView}>
+                    <View style={{ flexDirection: "row" }}>
+                        <Image style={styles.icon} source={require('./../../../img/converted_customers.png')} />
+                        <Text style={style.title1}>参与人</Text>
+                    </View>
+                    <View style={{ paddingRight: 20 }}>
+                        <TouchableOpacity onPress={() => { this.referToNew("User") }}>
+                            <Image
+                                style={styles.addIcon}
+                                source={require('./../../../img/clue_new_built.png')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <FlatList
+                    horizontal
+                    style={{ height: 85 }}
+                    data={related.relUserList}
+                    renderItem={this.renderRelParticipantsItem}
+                />
+            </View>
+            <View style={{ backgroundColor: "white", marginTop: margin }}>
+                <View style={styles.headerView}>
+                    <View style={{ flexDirection: "row" }}>
+                        <Image style={styles.icon} source={require('./../../../img/clue_contacts.png')} />
+                        <Text style={style.title1}>联系人</Text>
+                    </View>
+                    <View style={{ paddingRight: 20 }}>
+                        <TouchableOpacity onPress={() => { this.referToNew("contact") }}>
+                            <Image
+                                style={styles.addIcon}
+                                source={require('./../../../img/clue_new_built.png')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <FlatList
+                    data={related.contactList}
+                    renderItem={this.renderRelContactItem}
+                />
+            </View>
+        </View>);
+    };
+    getTemp = (productList) => {
+        const sections = [];
+        // productList.map(function (item) {
+        // }
+        for (let i = 0; i < productList.length; i++) {
+            let datas = [];
+            // for (let j = 0; j < 3; j++) {
+            datas.push(
+                {
+                    title: '产品名称',
+                    icon: "",
+                    value: productList.productTypeName || ''
+                }
+            );
+            datas.push(
+                {
+                    title: '销售价格',
+                    icon: "",
+                    value: productList.price || ''
+                }
+            );
+            datas.push(
+                {
+                    title: '数量',
+                    icon: "",
+                    value: productList.number || ''
+                }
+            );
+            // }
+
+            sections.push({ key: i, data: datas });
+        }
+        return sections;
+    }
+
+    //详情
+    creactDataSource = (details) => {
+        return (
+            <View>
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_e_s_time.png')}></Image>
+                        <Text style={styles.textitem2}>{"预计签单时间"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.expectSignTime ? TimeUtil.timetrans(details.expectSignTime.time) : ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_e_s_amount.png')}></Image>
+                        <Text style={styles.textitem2}>{"预计签单金额"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.expectSignMoney ? "￥" + details.expectSignMoney : ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_e_f_date.png')}></Image>
+                        <Text style={styles.textitem2}>{"预计首款日期"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.expectFirstbuyTime ? TimeUtil.timetrans(details.expectFirstbuyTime.time) : ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_e_f_quota.png')}></Image>
+                        <Text style={styles.textitem2}>{"预计首款配额"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.expectFirstbuyMoney ? "￥" + details.expectFirstbuyMoney : ''}</Text>
+                </View>
+                <View style={styles.detailline1} />
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_budget.png')}></Image>
+                        <Text style={styles.textitem2}>{"客户预算"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.customerBudget ? "￥" + details.customerBudget : ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_date.png')}></Image>
+                        <Text style={styles.textitem2}>{"商机日期"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.createdTime ? TimeUtil.timetrans(details.createdTime.time) : ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/clue_source.png')}></Image>
+                        <Text style={styles.textitem2}>{"商机来源"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.sourceName || ''}</Text>
+                </View>
+                <View style={styles.detailline1} />
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/clue_leading_official.png')}></Image>
+                        <Text style={styles.textitem2}>{"负责人"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.ownerUserName || ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/clue_department.png')}></Image>
+                        <Text style={styles.textitem2}>{"部门"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.deptName || ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/clue_founder.png')}></Image>
+                        <Text style={styles.textitem2}>{"创建人"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.sysCreatedUserName || ''}</Text>
+                </View>
+                <View style={styles.detailline2} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/clue_create_time.png')}></Image>
+                        <Text style={styles.textitem2}>{"创建时间"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{details.sysCreatedTime ? TimeUtil.timetrans(details.sysCreatedTime.time) : ''}</Text>
+                </View>
+                <View style={styles.detailline1} />
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_context.png')}></Image>
+                        <Text style={styles.textitem2}>{"背景"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{''}</Text>
+                </View>
+                <View style={styles.outViewStyle2}>
+                    <Text style={styles.textitem4}>{details.background || ''}</Text>
+                </View>
+                <View style={styles.detailline1} />
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/business_value.png')}></Image>
+                        <Text style={styles.textitem2}>{"价值"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{''}</Text>
+                </View>
+                <View style={styles.outViewStyle2}>
+                    <Text style={styles.textitem4}>{details.value || ''}</Text>
+                </View>
+                <View style={styles.detailline1} />
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                <View style={styles.outViewStyle}>
+                    <View style={styles.innelContent}>
+                        <Image style={styles.iconStyleLeft} source={require('./../../../img/customer_resume.png')}></Image>
+                        <Text style={styles.textitem2}>{"风险"}</Text>
+                    </View>
+                    <Text style={styles.textitem3}>{''}</Text>
+                </View>
+                <View style={styles.outViewStyle2}>
+                    <Text style={styles.textitem4}>{details.risk || ''}</Text>
+                </View>
+                <View style={styles.detailline1} />
+                <View style={styles.detailline0} />
+                <View style={styles.detailline1} />
+                {details.childList &&
+                    <View>
+                        <View style={styles.outViewStyle}>
+                            <View style={styles.innelContent}>
+                                <Image style={styles.iconStyleLeft} source={require('./../../../img/business_product.png')}></Image>
+                                <Text style={styles.textitem2}>{"产品"}</Text>
+                            </View>
+                            <Text style={styles.textitem3}>{''}</Text>
+                        </View>
+                    </View>
+                }
+                <ScrollView style={styles.container2}>
+                {details.childList && <SectionList
+                    renderItem={this.renderItem}
+                    ItemSeparatorComponent={this.separator}
+                    keyExtractor={this.keyExtractor}
+                    sections={this.getTemp(details.childList)}
+                    ListEmptyComponent={this.EmptyComponent}
+                    initialNumToRender={10}
+                    onEndReachedThreshold={0}
+                    renderSectionHeader={this.renderSectionHeader}
+                />}
+                </ScrollView>
+                {details.state == 1 && <View>
+                    <View style={styles.detailline0} />
+                    <View style={styles.detailline1} />
+                    <View style={styles.outViewStyle}>
+                        <View style={styles.innelContent}>
+                            <Image style={styles.iconStyleLeft} source={require('./../../../img/business_a_s_amount.png')}></Image>
+                            <Text style={styles.textitem2}>{"实际签单金额"}</Text>
+                        </View>
+                        <Text style={styles.textitem3}>{details.actualSignMoney ? "￥" + details.actualSignMoney : ''}</Text>
+                    </View>
+                    <View style={styles.detailline2} />
+                    <View style={styles.outViewStyle}>
+                        <View style={styles.innelContent}>
+                            <Image style={styles.iconStyleLeft} source={require('./../../../img/business_a_s_date.png')}></Image>
+                            <Text style={styles.textitem2}>{"实际签单日期"}</Text>
+                        </View>
+                        <Text style={styles.textitem3}>{details.actualSignTime ? TimeUtil.timetrans(details.actualSignTime.time) : ''}</Text>
+                    </View>
+                    <View style={styles.detailline2} />
+                    <View style={styles.outViewStyle}>
+                        <View style={styles.innelContent}>
+                            <Image style={styles.iconStyleLeft} source={require('./../../../img/business_reason.png')}></Image>
+                            <Text style={styles.textitem2}>{"赢单原因"}</Text>
+                        </View>
+                        <Text style={styles.textitem3}>{details.winReason || ''}</Text>
+                    </View>
+                    <View style={styles.detailline1} />
+                    <View style={styles.detailline0} />
+                    <View style={styles.detailline1} />
+                    <View style={styles.outViewStyle}>
+                        <View style={styles.innelContent}>
+                            <Image style={styles.iconStyleLeft} source={require('./../../../img/business_remark.png')}></Image>
+                            <Text style={styles.textitem2}>{"备注"}</Text>
+                        </View>
+                        <Text style={styles.textitem3}>{''}</Text>
+                    </View>
+                    <View style={styles.outViewStyle2}>
+                        <Text style={styles.textitem4}>{details.description || ''}</Text>
+                    </View>
+                    <View style={styles.detailline1} />
+                </View>
+                }
+                {details.state == 2 && <View>
+                    <View style={styles.detailline0} />
+                    <View style={styles.detailline1} />
+                    <View style={styles.outViewStyle}>
+                        <View style={styles.innelContent}>
+                            <Image style={styles.iconStyleLeft} source={require('./../../../img/business_reason.png')}></Image>
+                            <Text style={styles.textitem2}>{"丢单原因"}</Text>
+                        </View>
+                        <Text style={styles.textitem3}>{details.failReason || ''}</Text>
+                    </View>
+                    <View style={styles.detailline1} />
+                    <View style={styles.detailline0} />
+                    <View style={styles.detailline1} />
+                    <View style={styles.outViewStyle}>
+                        <View style={styles.innelContent}>
+                            <Image style={styles.iconStyleLeft} source={require('./../../../img/business_remark.png')}></Image>
+                            <Text style={styles.textitem2}>{"备注"}</Text>
+                        </View>
+                        <Text style={styles.textitem3}>{''}</Text>
+                    </View>
+                    <View style={styles.outViewStyle2}>
+                        <Text style={styles.textitem4}>{details.description || ''}</Text>
+                    </View>
+                    <View style={styles.detailline1} />
+                </View>
+                }
+            </View>
+        );
+    };
+    longPressDelete = (showDeleteIcon, index) => {
+        const { actions } = this.props;
+        actions.changeShowDelete(showDeleteIcon, index)
+    }
+
+    deleteParticipants = (item, index) => {
+        const { actions } = this.props;
+        const { navigate, state } = this.props.navigation;
+        actions.deleteParticipants(item, index, state.params.id)
+    }
+
+    renderRelParticipantsItem = ({ item, index }) => {
+        let icon = item.relUserName.slice(-2)
+        return (<TouchableOpacity onLongPress={() => { this.longPressDelete(!item.showDeleteIcon, index) }}><View style={styles.titleView}>
+            <View style={index % 2 == 0 ? styles.titleIcon : styles.titleIcon1}>
+                {item.showDeleteIcon ? <TouchableOpacity
+                    onPress={() => { this.deleteParticipants(item, index) }}
+                    style={{ position: "absolute", right: -5, top: -5 }}
+                >
+                    <Image style={{ width: 16, height: 16 }} source={require('./../../../img/releted_contact_delete.png')} />
+                </TouchableOpacity>
+                    : null}
+                <Text style={{ fontSize: 12 }}>{icon}</Text>
+            </View>
+            <View style={styles.titieName}>
+                <Text style={{ fontSize: 12 }}>{item.relUserName}</Text>
+            </View>
+        </View></TouchableOpacity>)
+    }
+
+    callPhone = (phoneCode) => {
+        return Linking.openURL(`tel:${phoneCode}`)
+    }
+
+    renderRelContactItem = ({ item }) => {
+        var iconReq1 = item.status == 2 ? require("./../../../img/visit_action_complete.png") : require("./../../../img/visit_action_accomplish.png");
+        return (<View style={style.row}>
+            <View style={styles.cellleft}>
+                <Image style={styles.imageIcon} source={iconReq1} />
+            </View>
+            <View style={styles.cellRight}>
+                <View style={style.row_between}>
+                    <View>
+                        <Text style={styles.title}>{item.name} <Text style={styles.sub}>{item.postName || "--"}</Text></Text>
+                        <Text style={styles.subright}>{item.customerInfo && item.customerInfo.name}</Text>
+                    </View>
+                    <View style={{ alignItems: "center", justifyContent: "center", marginRight: 10 }}>
+                        <Image onPress={() => { this.callPhone(item.mobile) }} style={styles.imageIconRight} source={require('./../../../img/cellphone_r.png')} />
+                        {this.state.roletype == 83 ? <Text style={styles.subright}>{item.customerInfo && item.customerInfo.salesVOs && item.customerInfo.salesVOs[0] && item.customerInfo.salesVOs[0].ownerUserName}</Text> : null}
+                    </View>
+                </View>
+            </View>
+        </View>);
+    }
+
+
+    onSelect = item => {
+        this.setState({ showPop: !this.state.showPop });
+        const { navigate } = this.props.navigation;
+        switch (item.id) {
+            case 1://编辑
+                let idVal = this.props.navigation.state.params.id;
+                navigate("newBizopp", { isEdit: true, id: idVal, updateData: this.updateDetails });
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
+    };
+    clickRight = () => {
+        this.setState({ showPop: !this.state.showPop });
+    };
+    changeStage = (stageid) => {
+        const { bizoppDetailAction, actions } = this.props;
+        const { navigate, state } = this.props.navigation;
+        bizoppDetailAction.changeBizoppStages({ id: state.params.id, params: { stageid: stageid } })
+    }
+    _renderHeader(section, index, isActive, that) {
+        const details = that.props.$$state.bizoppDetail
+        let selectIcon = ['business_tap', "business_develop", 'business_approve', 'business_transact']
+        var iconReq = section.title.oppstage_id === 80
+            ? require("./../../../img/business_flag_r.png")
+            : require("./../../../img/business_flag.png");
+        if (details) {
+            iconReq = section.title.oppstage_id.toString() === details.saleStage
+                ? require("./../../../img/business_flag_r.png")
+                : require("./../../../img/business_flag.png");
+        }
+        return (
+            <View style={styles.header1}>
+                <View style={{ flexDirection: 'row' }} >
+                    <Image source={{ uri: selectIcon[index] }} style={styles.icon1} />
+                    <Text style={styles.headerText1}>{section.title.oppstage_name}</Text>
+                </View>
+                <TouchableOpacity onPress={() => that.changeStage(section.title.oppstage_id)} >
+                    <Image
+                        source={iconReq}
+                        style={styles.icon}
+                    />
+                </TouchableOpacity>
+
+            </View>
+        );
+
+    }
+
+    changeStageAction = (oppstage_id, oppaction_id, is_finish) => {
+        const { bizoppDetailAction, actions } = this.props;
+        const { navigate, state } = this.props.navigation;
+        bizoppDetailAction.bizoppStagesActionDone({ id: state.params.id, params: { oppstage_id: oppstage_id, oppaction_id: oppaction_id, is_finish: is_finish } })
+    }
+    _renderContent(section, key, isActiveSection, that) {
+        const details = that.props.$$state.bizoppDetail
+        let enabled = false;
+        if (details) {
+            enabled = section.title.oppstage_id.toString() === details.saleStage ? false : true
+        }
+        return (
+            <View style={styles.content}>
+                {section.content.length > 0 ? (
+                    section.content.map((item, index) => {
+                        let checked = item.is_finish === 1 ? true : false
+                        return (
+                            <View style={{ marginLeft: 26 }} >
+                                <Item
+                                    styles={listStyle}
+                                    extra={
+                                        <Switch
+                                            checked={checked}
+                                            color={mainColor}
+                                            disabled={enabled}
+                                            onChange={(v) => that.changeStageAction(item.oppstage_id, item.oppaction_id, item.is_finish)}
+                                        />
+                                    }
+                                >
+                                    {item.oppaction_name}
+                                </Item>
+                            </View>
+
+
+                        );
+                    })
+                ) : (
+                        <View />
+                    )}
+            </View>
+        );
+    }
+    onChange = (isActiveSection, section) => {
+        if (isActiveSection == section) {
+            //点击当前展开的section
+            if (section == 0) {
+                this.setState({ isActive: false, classSelect: "全部分类" });
+            }
+        } else {
+            //点击其他section 重新选择
+            this.setState({ isActive: false, classSelect: "全部分类" });
+        }
+    };
+    creactStageData(bizoppStages) {
+        if (bizoppStages.resultList) {
+            let stageList = bizoppStages.stageList;
+            let resultList = bizoppStages.resultList;
+            let stageData = [];
+            for (let index = 0; index < stageList.length; index++) {
+                const stage = stageList[index];
+                let obj = {};
+                for (let index = 0; index < resultList.length; index++) {
+                    const result = resultList[index];
+                    if (stage.oppstage_id === result.oppstage_id) {
+                        // console.log(stage, result);
+                        obj = { title: stage, content: result.children[0].children };
+                    }
+                }
+                stageData.push(obj);
+            }
+            return stageData
+        }
+        return []
+
+    }
+    actionHandler = (type) => {
+        switch (type) {
+            case "record":
+                break;
+            case "visit":
+                break;
+        }
+    };
+    render() {
+        // let cusDetail = cusdetail.data;
+        const tabs = [{ title: "动态" }, { title: "阶段" }, { title: "详情" }, { title: "相关" }];
+
+        // if(this.props.$$state.bizoppDetail == null){
+        //     return <View />
+        // }
+        const details = this.props.$$state.bizoppDetail
+        const related = this.props.$$state.related
+        let bizoppStages = this.props.$$state.bizoppStages
+
+        // const related = this.props.$$state.bizoppDetail.related
+        if (details == null || bizoppStages == null) {
+            return <CustomNavbar
+                centerTitle={this.state.centerTitle}
+                {...this.props}
+            // clickRight={this.clickRight} //右1点击事件
+            />
+        }
+        let popoverData = details.canEdit == '1' ? [{ id: 1, type: "编辑" }, { id: 2, type: '商机赢单' }, { id: 3, type: '商机丢单' }]
+            : [{ id: 2, type: '商机赢单' }, { id: 3, type: '商机丢单' }];
+        return (
+            <View style={styles.container}>
+                <ImageBackground source={require('./../../../img/business_banner_bg.png')}
+                    style={{ height: 198, width: screenW }}
+                    imageStyle={{ resizeMode: 'stretch', width: screenW }}>
+                    <CustomNavbar
+                        centerTitle={this.state.centerTitle}
+                        centerTitleStyle={{ color: "white" }}
+                        {...this.props}
+                        leftImage={require("./../../../img/clue_back_w.png")}
+                        rightImage={require("./../../../img/clue_more.png")}
+                        rightImageStyle={{ height: 4, width: 16 }}
+                        clickRight={this.clickRight} //右1点击事件
+                        navStyle={{ backgroundColor: "transparent", borderBottomWidth: 0 }}
+                    />
+                    <Popover
+                        show={this.state.showPop} //气泡视图显隐状态
+                        modalData={popoverData} //气泡视图数据源
+                        modalItemClick={this.onSelect} //气泡视图点击事件
+                        closeMenu={isShow => {
+                            //气泡视图关闭回调
+                            this.setState({ showPop: isShow });
+                        }}
+                    />
+                    <View style={styles.header}>
+                        <View style={{ flexDirection: "row" }}>
+                            <Image style={styles.headerIcon} source={require('./../../../img/bizopp_head_portrait.png')} />
+                            <View>
+                                {/* 商机状态,1赢单，2丢单，3跟进中 */}
+                                <Text style={styles.name}>{details.name}</Text>
+                                <Text style={styles.desc1}>{details.customerName}</Text>
+                                <Text style={styles.desc1}>{details.saleStageName + "|"} {details.state == 1 || details.state == 2 ? "--" : details.stageStayTime}</Text>
+                                <Text style={styles.desc1}>{"预计收入 | "}{details.state == 1 ?
+                                    (details.actualSignMoney ? "￥" + details.actualSignMoney : "--") :
+                                    (details.state == 2 || details.state == 3 ? (details.expectSignMoney ? "￥" + details.expectSignMoney : "--") : "--")}</Text>
+                            </View>
+                        </View>
+                        <View style={{ marginRight: margin, alignItems: "center" }}>
+                            <Image style={styles.phone} source={require('./../../../img/customer_attestation.png')} />
+                            <Text style={styles.desc1}>{details.ownerUserName}</Text>
+                        </View>
+                    </View>
+                </ImageBackground>
+                <Tabs
+                    tabs={tabs}
+                    initialPage={2}
+                    tabBarUnderlineStyle={{
+                        backgroundColor: mainColor
+                    }}
+                    tabBarActiveTextColor={mainColor}
+                    tabBarInactiveTextColor={color666}
+                >
+                    <View style={[styles.container, { backgroundColor: colorF5 }]}>
+                        <View style={{ marginTop: 16 }} />
+                        {this.renderDynamic()}
+                    </View>
+                    <View style={styles.container}>
+                        <Accordion
+                            sections={this.creactStageData(bizoppStages)}
+                            renderHeader={this._renderHeader}
+                            renderContent={this._renderContent}
+                            that={this}
+                            // initiallyActiveSection={this.state.isActiveSection}
+                            onChange={(isActiveSection, section) => {
+                                this.onChange(isActiveSection, section);
+                            }}
+                        />
+                    </View>
+                    <ScrollView style={[styles.container, { backgroundColor: colorF5 }]}>
+                        {this.creactDataSource(details)}
+                    </ScrollView>
+                    {/* <SectionList
+                            renderItem={this.renderItem}
+                            ItemSeparatorComponent={this.separator}
+                            keyExtractor={this.keyExtractor}
+                            sections={this.creactDataSource(details)}
+                            ListEmptyComponent={this.EmptyComponent}
+                            initialNumToRender={10}
+                            onEndReachedThreshold={0}
+                            renderSectionHeader={this.renderSectionHeader}
+                        /> */}
+                    <ScrollView style={[styles.container, { backgroundColor: colorF5 }]}>
+                        {this.renderRelated(related)}
+                    </ScrollView>
+                </Tabs>
+                <View style={styles.btnGroup}>
+                    <TouchableOpacity
+                        onPress={() => this.actionHandler("record")}
+                        activeOpacity={0.7}
+                        focusedOpacity={0.5}>
+                        <View style={styles.subBtn}>
+                            <Image style={{ width: 14, height: 14 }} source={require('./../../../img/business_fast_record.png')} />
+                            <Text style={styles.subBtnText}>快速记录</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={styles.subBtnLine} />
+                    <TouchableOpacity
+                        onPress={() => this.actionHandler("visit")}
+                        activeOpacity={0.7}
+                        focusedOpacity={0.5}>
+                        <View style={styles.subBtn}>
+                            <Image style={{ width: 14, height: 14 }} source={require('./../../../img/customer_new_visit.png')} />
+                            <Text style={styles.subBtnText}>临时拜访</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    titleView: {
+        marginTop: 10,
+        width: 64,
+        height: 10,
+        alignItems: 'center',
+    },
+    titleIcon: {
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        borderColor: "#3CA4FB",
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    titleIcon1: {
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        borderColor: "#FF6258",
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    titieName: {
+        textAlign: "center",
+        justifyContent: 'center',
+        height: 40,
+        alignItems: 'center',
+    },
+
+    container: {
+        flex: 1,
+        backgroundColor: "white"
+    },
+    container2: {
+        flex: 1,
+        backgroundColor: "white",
+        height: 200,
+    },
+    title1: {
+        fontSize: font13,
+        color: color333
+    },
+    headerView: {
+        height: 40,
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        borderBottomWidth: 0.3,
+        borderBottomColor: colorDDD
+    },
+    separator: {
+        height: 0.5,
+        backgroundColor: "#e5e5e5",
+        marginLeft: 72
+    },
+    header: {
+        justifyContent: "space-between",
+        flexDirection: "row",
+        marginTop: 15,
+        marginLeft: margin
+        // borderBottomColor: colorDDD,
+        // borderBottomWidth: 0.4,
+        // zIndex: 0,
+        // backgroundColor: "#fff",
+        // marginBottom: 15
+    },
+    contentView: {
+        alignItems: "center",
+        flexDirection: "row",
+        backgroundColor: "white",
+        height: 84
+    },
+    headerIcon: {
+        height: 40,
+        width: 40,
+        // backgroundColor: mainColor,
+        marginRight: marginT
+    },
+    phone: {
+        height: 16,
+        width: 16,
+        // backgroundColor: colorYew,
+        marginBottom: marginT
+    },
+    desc1: {
+        fontSize: font12,
+        marginBottom: marginV,
+        backgroundColor: "transparent",
+        color: "white"
+    },
+    name: {
+        fontSize: font14,
+        marginBottom: marginV,
+        backgroundColor: "transparent",
+        color: "white"
+    },
+    title: {
+        fontSize: font14,
+        color: color333,
+        marginTop: marginT,
+        marginBottom: marginV
+        // backgroundColor: "red"
+    },
+    imageIcon: {
+        height: 40,
+        width: 40,
+        backgroundColor: colorYew
+    },
+    desc: {
+        fontSize: font12,
+        color: colorYew,
+        marginRight: margin,
+        alignSelf: "flex-end"
+        // marginBottom: marginV,
+        // backgroundColor: "blue"
+    },
+    icon: {
+        height: 14,
+        width: 14,
+        // backgroundColor: mainColor,
+        marginRight: marginT,
+        marginLeft: margin
+    },
+    addIcon: {
+        height: 14,
+        width: 14,
+        alignSelf: "flex-end",
+        // backgroundColor: mainColor,
+    },
+    cellleft: {
+        flex: 2,
+        // backgroundColor: "blue",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    cellRight: {
+        flex: 8,
+        marginRight: marginT,
+        // backgroundColor: "red"
+    },
+    title: {
+        fontSize: font14,
+        color: color333,
+        marginTop: marginT,
+        marginBottom: marginV,
+    },
+    subtitle: {
+        fontSize: font10,
+        color: color999,
+        marginTop: 14,
+        marginBottom: marginV,
+        marginLeft: 8,
+    },
+    imageIcon: {
+        height: 40,
+        width: 40,
+    },
+    imageIconRight: {
+        height: 14,
+        width: 14,
+        marginTop: -6,
+        marginRight: marginV,
+    },
+    desc: {
+        fontSize: font12,
+        color: colorYew,
+        marginRight: margin,
+        alignSelf: "flex-end",
+        marginBottom: marginV,
+    },
+    sub: {
+        fontSize: font12,
+        color: color999,
+        marginRight: marginV,
+        marginBottom: marginT,
+    },
+    subright: {
+        fontSize: font12,
+        color: color333,
+        marginRight: 12,
+        marginTop: 4,
+        marginBottom: marginT,
+    },
+    dynamic: {
+        flex: 1,
+        marginBottom: 45
+    }, btnGroup: {
+        flexDirection: "row",
+        height: 44,
+        backgroundColor: "#fff",
+        borderTopWidth: 1,
+        borderTopColor: "#f5f5f5",
+        alignItems: "center",
+        justifyContent: "space-around",
+    },
+    subBtnText: {
+        marginLeft: 8,
+        fontSize: font13,
+        color: color666,
+    },
+    subBtn: {
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    subBtnLine: {
+        height: 30,
+        borderWidth: 1,
+        borderColor: "#f5f5f5",
+    },
+    icon1: {
+        height: 14,
+        width: 14,
+        marginLeft: 16,
+        marginRight: 10
+    },
+    icon: {
+        height: 16,
+        width: 16,
+        marginRight: 16,
+        marginLeft: margin
+    },
+    header1: {
+        height: 45,
+        alignItems: "center",
+        borderBottomColor: "#e5e5e5",
+        borderBottomWidth: 0.5,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    headerText1: {
+        fontSize: font15,
+        color: color333,
+    },
+
+    contentView1: {
+        backgroundColor: "#f9f9f9",
+        height: 36,
+        justifyContent: "space-between",
+        borderBottomColor: "#e5e5e5",
+        borderBottomWidth: 0.5,
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    contentText1: {
+        fontSize: 12,
+        color: "#666",
+        marginLeft: 24
+    },
+    outViewStyle: {
+        flex: 1,
+        height: 45,
+        // width: width,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        // marginBottom: 1,
+        justifyContent: 'space-between',
+        paddingLeft: 15,
+        alignItems: 'center',
+        // top: 10,
+    },
+    outViewStyle1: {
+        flex: 1,
+        height: 45,
+        // width: width,
+        flexDirection: 'column',
+        backgroundColor: 'white',
+        // marginBottom: 1,
+        justifyContent: 'space-between',
+        paddingLeft: 15,
+        alignItems: 'center',
+        // top: 10,
+    },
+    outViewStyle2: {
+        // flex: 1,
+        // height: 60,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        justifyContent: 'space-between',
+        paddingLeft: 15,
+        paddingRight: 15,
+        alignItems: 'center',
+        paddingBottom: 10,
+    },
+    midViewStyle: {
+        alignItems: 'center',
+        backgroundColor: 'white',
+        marginLeft: 20,
+        marginRight: 20,
+    },
+    innelContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        // backgroundColor:'white',
+    },
+    iconStyleLeft: {
+        width: 14,
+        height: 14,
+        justifyContent: 'flex-start',
+        // borderRadius: imageHight / 2,
+        // borderWidth: 1,
+        // borderColor: 'black',
+        // backgroundColor: 'white'
+    },
+    //   iconStyleRight: {
+    //     width: imageHight,
+    //     height: imageHight,
+    //     // justifyContent: 'flex-end',
+    //     // borderRadius: imageHight / 2,
+    //     // borderWidth: 1,
+    //     // borderColor: 'black',
+    //     // backgroundColor: 'white',
+    //     // alignItems: 'center',
+    //     marginRight: 20,
+    //     marginLeft: 20
+    //   },
+    textitem2: {
+        fontSize: font15,
+        color: color333,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        marginLeft: 10,
+    },
+    textitem3: {
+        fontSize: font14,
+        color: color999,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        marginRight: 37,
+    },
+    textitem4: {
+        fontSize: font14,
+        color: color999,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'left',
+    },
+    detailline0: {
+        height: 10,
+    },
+    detailline1: {
+        height: 0.5,
+        backgroundColor: "#dddddd",
+    },
+    detailline2: {
+        height: 0.5,
+        backgroundColor: "#dddddd",
+        marginLeft: 39
+    },
+});
