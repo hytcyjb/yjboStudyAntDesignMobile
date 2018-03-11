@@ -32,6 +32,8 @@ export default class App extends Component {
       <Button>你哈</Button>
       <InputItem style={styles.inputItemStyle}
         placeholder={"请输入"}
+        textAlign="right"
+        type="digit"
         size='small'>标题*</InputItem>
         {/* <Page1/> */}
         <Yjbopopover/>
@@ -63,6 +65,7 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
     backgroundColor:"white",
-    textAlign:"right",
+    textAlign:"center",
+    justifyContent:"space-between"
   },
 });
