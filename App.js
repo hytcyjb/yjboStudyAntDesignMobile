@@ -11,11 +11,12 @@ import {
   // Text,
   View
 } from 'react-native';
-import { Button,Text,Popover } from 'antd-mobile';
+import {List, Button,Text,Popover,InputItem } from 'antd-mobile';
 import Yjbopopover from './js/yjbopopover';
 import Page1 from './js/page1';
 // import AppCopy from './js/AppCopy';
 // import Yjbopopover from './js/yjbopopover';
+// import InputItemDemo from './js/inputitemDemo'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -29,8 +30,12 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
       <Button>你哈</Button>
+      <InputItem style={styles.inputItemStyle}
+        placeholder={"请输入"}
+        size='small'>标题*</InputItem>
         {/* <Page1/> */}
         <Yjbopopover/>
+        {/* <InputItemDemo/> */}
       </View>
     );
   }
@@ -52,5 +57,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
+  },
+  inputItemStyle: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+    backgroundColor:"white",
+    textAlign:"right",
   },
 });
