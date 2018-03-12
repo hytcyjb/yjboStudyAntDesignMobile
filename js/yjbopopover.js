@@ -34,9 +34,7 @@ export default class yjbopropver extends Component {
         <NavBar leftContent="返回"
                 mode="light"
                 onLeftClick={() => console.log('onLeftClick')}
-                rightContent={[
-        // <Icon key="1" type="ellipsis" />,
-      ]}
+               
         >个人维度</NavBar>
       </View>
     );

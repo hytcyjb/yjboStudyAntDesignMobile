@@ -9,12 +9,12 @@ import {
   Platform,
   StyleSheet,
   // Text,
-  View
+  View,Alert
 } from 'react-native';
-import {List, Button,Text,Popover,InputItem } from 'antd-mobile';
+import {List, Button,Text,Popover,InputItem, } from 'antd-mobile';
 import Yjbopopover from './js/yjbopopover';
 import Page1 from './js/page1';
-// import AppCopy from './js/AppCopy';
+// import Util from './js/Alter.js';
 // import Yjbopopover from './js/yjbopopover';
 // import InputItemDemo from './js/inputitemDemo'
 
@@ -36,13 +36,26 @@ export default class App extends Component {
         type="digit"
         size='small'>标题*</InputItem>
         {/* <Page1/> */}
-        <Yjbopopover/>
+      
         {/* <InputItemDemo/> */}
+        {alterFF()}
       </View>
     );
   }
 }
 
+function alterFF (){
+  Alert.alert(
+    'Alert Title',
+    'My Alert Msg',
+    [
+      {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
+      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ],
+    // { cancelable=false }
+  )
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
