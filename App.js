@@ -23,7 +23,8 @@ import Datepicker from './js/datepicker';
 // import InputItemDemo from './js/inputitemDemo'
 // import Calentar from "./js/calendardemo/calendars"
 import PhotoUtil from './js/imagepickerutil';
-import Calend from './js/calendStyle1'
+import Calend from './js/diffDataCalendar'
+// import Calend from './js/calendardemo/calendars_yjbo'
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -49,7 +50,7 @@ export default class App extends Component {
         {/* <Calentar/> */}
         {/* <InputItemDemo/> */}
         {/* {alterFF()} */}
-        
+
       </View>
     );
   }
@@ -76,16 +77,13 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: 20,
-    textAlign: 'center',
     margin: 10,
   },
   instructions: {
-    textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
   },
   inputItemStyle: {
-    textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
     backgroundColor:"white",

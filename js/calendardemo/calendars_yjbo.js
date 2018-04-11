@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import {Calendar} from 'react-native-calendars';
 
-export default class CalendarsScreen extends Component {
+export default class calendars_yjbo extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -26,7 +26,7 @@ export default class CalendarsScreen extends Component {
         />
         <Text style={styles.text}>Calendar with marked dates and hidden arrows</Text>
         <Calendar
-        onDayPress={this.onDayPress}
+         onDayPress={this.onDayPress}
           style={styles.calendar}
           current={'2012-05-16'}
           minDate={'2012-05-10'}
@@ -79,9 +79,14 @@ export default class CalendarsScreen extends Component {
             '2012-05-08': {textColor: '#666'},
             '2012-05-09': {textColor: '#666'},
             '2012-05-14': {startingDay: true, color: 'blue', endingDay: true},
-            '2012-05-21': {startingDay: true, color: 'blue'},
-            '2012-05-22': {endingDay: true, color: 'gray'},
-            '2012-05-24': {startingDay: true, color: 'gray'},
+            // '2012-05-21': {startingDay: true, color: 'blue'},
+            // '2012-05-22': {endingDay: true, color: 'gray'},
+
+            '2012-05-20': {startingDay: true, color: 'gray'},
+            '2012-05-21': {color: 'gray'},
+            '2012-05-22': {color: 'gray'},
+            '2012-05-23': {color: 'gray'},
+            '2012-05-24': {color: 'gray'},
             '2012-05-25': {color: 'gray'},
             '2012-05-26': {endingDay: true, color: 'gray'}}}
           hideArrows={false}
