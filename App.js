@@ -12,19 +12,21 @@ import {
   View,Alert
 } from 'react-native';
 import {List, Button,Text,Popover,InputItem, } from 'antd-mobile';
-import Yjbopopover from './js/yjbopopover';
-import Page1 from './js/page1';
+// import Yjbopopover from './js/yjbopopover';
+// import Page1 from './js/page1';
 // import Util from './js/Alter.js';
 import Imagepicker from './js/imagepicker';
-import Datepicker from './js/datepicker';
+// import Datepicker from './js/datepicker';
 // import Photopage from './js/photopage';
 // import AppCopy from './js/AppCopy';
 // import Yjbopopover from './js/yjbopopover';
 // import InputItemDemo from './js/inputitemDemo'
 // import Calentar from "./js/calendardemo/calendars"
-import PhotoUtil from './js/imagepickerutil';
+// import PhotoUtil from './js/imagepickerutil';
 import Calend from './js/diffDataCalendar'
 // import Calend from './js/calendardemo/calendars_yjbo'
+// import Modeldialog from './js/modeldialog';
+import Model from './js/modelceshi'
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -45,9 +47,10 @@ export default class App extends Component {
         {/* <Page1/> */}
       
         <Imagepicker/>
-        <PhotoUtil/>
+        {/* <PhotoUtil/> */}
+        {/* <Modeldialog/> */}
         <Calend/>
-        {/* <Calentar/> */}
+        <Model/>
         {/* <InputItemDemo/> */}
         {/* {alterFF()} */}
 

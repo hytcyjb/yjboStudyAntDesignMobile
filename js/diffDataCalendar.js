@@ -1,9 +1,9 @@
 //不同的时间选择器
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView,TouchableOpacity,Text,Modal } from 'react-native';
 import moment from "moment";
-import { DatePicker, List, PickerView, Picker } from 'antd-mobile';
+import { DatePicker, List, PickerView, Picker, Button } from 'antd-mobile';
 const now = new Date();
 let markedDatesSelected = {};
 let jijieValue = [
@@ -24,17 +24,7 @@ let jijieValue = [
         value: '四季度',
     },
 ];
-
-let years = [
-    // {
-    //   label: '2013',
-    //   value: '2013',
-    // },
-    // {
-    //   label: '2014',
-    //   value: '2014',
-    // },
-];
+let years = [];
 const seasons = [];
 export default class diffDataCalendar extends React.Component {
 
@@ -44,9 +34,10 @@ export default class diffDataCalendar extends React.Component {
         this.initJidu();
         this.state = {
             markedDatesSelected: markedDatesSelected,
-            value: undefined,
+            valueMonth: undefined,
             valueJidu: "",
             startEndTime:[],//startEndTime:[2018-01-01,2018-04-08]格式
+            showState:false,
         };
     }
     dealWeekDays = (day) => {//周
@@ -86,7 +77,7 @@ export default class diffDataCalendar extends React.Component {
         console.log('selected day', day);
         this.dealWeekDays(day.dateString);
     }
-    onChange = (value) => {//月份
+    onChangeMonth = (value) => {//月份
         let valueString = moment(value).format("YYYY-MM-DD");//解析时这样处理,获取指定格式的日期，日
         let valueYearString = moment(value).format("YYYY");
         let valueMonthString = moment(value).format("MM");
@@ -96,7 +87,7 @@ export default class diffDataCalendar extends React.Component {
         //获取该月的第一天和最后一天,month([month])注意一定得是当前的月份-1；月
         let startTime = [valueYearString] + "-" + [valueMonthString] + "-01";
         let lastDayOfMonth = moment([[valueYearString], [month], 31]).month([month]).format("YYYY-MM-DD");
-        this.setState({ value: value,startEndTime:[[startTime],[lastDayOfMonth]], });
+        this.setState({ valueMonth: value,startEndTime:[[startTime],[lastDayOfMonth]], });
     }
     onChangeJidu = (value) => {//季度显示的日期
         let startTime = "";
@@ -120,6 +111,13 @@ export default class diffDataCalendar extends React.Component {
             startEndTime:[[startTime],[endTime]],
         });
     }
+    setModalVisible =()=>{
+        // alert("你好");
+        let isShowState = !this.state.showState;
+        this.setState({
+            showState : isShowState,
+        });
+    }
     render() {
         return (
             <ScrollView style={styles.container}>
@@ -139,18 +137,12 @@ export default class diffDataCalendar extends React.Component {
                     defaultDate={now}
                     // value={this.state.value}
                     mode="month"
-                    onChange={this.onChange}
+                    onChange={this.onChangeMonth}
                     format="YYYY-MM-DD"
                     extra={this.state.startEndTime[0]+"-"+this.state.startEndTime[1]}
                 >
                     <List.Item arrow="horizontal">Select Date</List.Item>
                 </DatePicker>
-                {/* <PickerView
-                    onChange={this.onChangeJidu}
-                    value={this.state.valueJidu}
-                    data={seasons}
-                    cascade={false}
-                /> */}
                 <List>
                     <Picker
                         data={seasons}
@@ -164,6 +156,51 @@ export default class diffDataCalendar extends React.Component {
                         <List.Item arrow="horizontal">Multiple</List.Item>
                     </Picker>
                 </List>
+                <TouchableOpacity 
+                    style={{width:300,height:30}}
+                    onPress={()=>{this.setState({isShowState:true,})}}>
+                    <Text>点我 点我 </Text>
+                </TouchableOpacity>
+                {this.state.isShowState ? <Modal
+                    // animationType='slide'
+                    transparent={true}
+                    visible={this.state.showState}
+                    // onShow={() => { }}
+                    // onRequestClose={() => { }}
+                     >
+                    <View style={styles.modalStyle}>
+                        <View style={styles.subView}>
+                            <Text style={styles.titleText}>
+                                提示
+                            </Text>
+                            <Text style={styles.contentText}>
+                                Modal显示的View 多行了超出一行了会怎么显示，就像这样显示了很多内容该怎么显示，看看效果
+                            </Text>
+                            <View style={styles.horizontalLine} />
+
+
+                            <View style={styles.buttonView}>
+                                <TouchableOpacity underlayColor='transparent'
+                                    style={styles.buttonStyle}
+                                    onPress={this.setModalVisible()}
+                                    >
+                                    <Text style={styles.buttonText}>
+                                        取消
+                                    </Text>
+                                </TouchableOpacity>
+                                <View style={styles.verticalLine} />
+                                <TouchableOpacity underlayColor='transparent'
+                                    style={styles.buttonStyle}
+                                    onPress={this.setModalVisible()}
+                                    >
+                                    <Text style={styles.buttonText}>
+                                        确定
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal> : null}
             </ScrollView>
         );
     }
@@ -185,5 +222,65 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#eee',
         height: 350
+    },
+     // modal的样式  
+     modalStyle: {
+        // backgroundColor:'#ccc',  
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+    },
+    // modal上子View的样式  
+    subView: {
+        marginLeft: 60,
+        marginRight: 60,
+        backgroundColor: '#fff',
+        alignSelf: 'stretch',
+        justifyContent: 'center',
+        borderRadius: 10,
+        borderWidth: 0.5,
+        borderColor: '#ccc',
+    },
+    // 标题  
+    titleText: {
+        marginTop: 10,
+        marginBottom: 5,
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    // 内容  
+    contentText: {
+        margin: 8,
+        fontSize: 14,
+        textAlign: 'center',
+    },
+    // 水平的分割线  
+    horizontalLine: {
+        marginTop: 5,
+        height: 0.5,
+        backgroundColor: '#ccc',
+    },
+    // 按钮  
+    buttonView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    buttonStyle: {
+        flex: 1,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    // 竖直的分割线  
+    verticalLine: {
+        width: 0.5,
+        height: 44,
+        backgroundColor: '#ccc',
+    },
+    buttonText: {
+        fontSize: 16,
+        color: '#3393F2',
+        textAlign: 'center',
     },
 });
