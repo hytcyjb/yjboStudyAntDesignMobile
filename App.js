@@ -23,7 +23,8 @@ import Imagepicker from './js/imagepicker';
 // import InputItemDemo from './js/inputitemDemo'
 // import Calentar from "./js/calendardemo/calendars"
 // import PhotoUtil from './js/imagepickerutil';
-import Calend from './js/diffDataCalendar'
+// import Calend from './js/diffDataCalendar'
+import Dialog from './js/dialogDemo';
 // import Calend from './js/calendardemo/calendars_yjbo'
 // import Modeldialog from './js/modeldialog';
 import Model from './js/modelceshi'
@@ -49,8 +50,8 @@ export default class App extends Component {
         <Imagepicker/>
         {/* <PhotoUtil/> */}
         {/* <Modeldialog/> */}
-        <Calend/>
-        <Model/>
+        <Dialog/>
+        {/* <Model/> */}
         {/* <InputItemDemo/> */}
         {/* {alterFF()} */}
 

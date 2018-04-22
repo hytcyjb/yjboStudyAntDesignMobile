@@ -108,12 +108,14 @@ export default class App extends Component {
                         <Calendar
                             onDayPress={(day) => { this.dealCalendar(day) }}
                             // current={'2012-05-16'}
+                            maxDate={'2018-04-18'}
                             style={styles.calendar}
                             firstDay={1}//1显示周一作为第一天，7，显示周日作为第一天
                             markingType={'period'}
                             markedDates={
                                 this.state.markedDatesSelected
                             }
+                            monthFormat={'yyyy - MM'}//设置头部日期显示样式
                             hideArrows={false}
                         />
                     </View>

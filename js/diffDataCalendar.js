@@ -1,5 +1,5 @@
 //不同的时间选择器
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { Calendar, CalendarList, Agenda,LocaleConfig } from 'react-native-calendars';
 import React from 'react';
 import { View, StyleSheet, ScrollView,TouchableOpacity,Text,Modal } from 'react-native';
 import moment from "moment";
@@ -24,8 +24,340 @@ let jijieValue = [
         value: '四季度',
     },
 ];
+let jijieValue2 = [
+    {
+        label: '一季度',
+        value: '一季度',
+    },
+];
 let years = [];
 const seasons = [];
+LocaleConfig.locales['fr'] = {
+    monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+    monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+    dayNames:  ['周日','周一','周二.','周三','周四','周五','周六',],
+    dayNamesShort: ['周日','周一','周二.','周三','周四','周五','周六']
+  };
+  
+LocaleConfig.defaultLocale = 'fr';
+let dataThree = [ {
+    "value" : "2",
+    "label" : "北京",
+    "children" : [ {
+      "value" : "3",
+      "label" : "北京市",
+      "children" : [ {
+        "value" : "4",
+        "label" : "东城区",
+        "children" : null
+      }, {
+        "value" : "5",
+        "label" : "西城区",
+        "children" : null
+      }, {
+        "value" : "6",
+        "label" : "朝阳区",
+        "children" : null
+      }, {
+        "value" : "7",
+        "label" : "丰台区",
+        "children" : null
+      }, {
+        "value" : "8",
+        "label" : "石景山区",
+        "children" : null
+      }, {
+        "value" : "9",
+        "label" : "海淀区",
+        "children" : null
+      }, {
+        "value" : "10",
+        "label" : "门头沟区",
+        "children" : null
+      }, {
+        "value" : "11",
+        "label" : "房山区",
+        "children" : null
+      }, {
+        "value" : "12",
+        "label" : "通州区",
+        "children" : null
+      }, {
+        "value" : "13",
+        "label" : "顺义区",
+        "children" : null
+      }, {
+        "value" : "14",
+        "label" : "昌平区",
+        "children" : null
+      }, {
+        "value" : "15",
+        "label" : "大兴区",
+        "children" : null
+      }, {
+        "value" : "16",
+        "label" : "怀柔区",
+        "children" : null
+      }, {
+        "value" : "17",
+        "label" : "平谷区",
+        "children" : null
+      }, {
+        "value" : "18",
+        "label" : "密云县",
+        "children" : null
+      }, {
+        "value" : "19",
+        "label" : "延庆县",
+        "children" : null
+      } ]
+    } ]
+  }, {
+    "value" : "20",
+    "label" : "天津",
+    "children" : [ {
+      "value" : "21",
+      "label" : "天津市",
+      "children" : [ {
+        "value" : "22",
+        "label" : "和平区",
+        "children" : null
+      }, {
+        "value" : "23",
+        "label" : "河东区",
+        "children" : null
+      }, {
+        "value" : "24",
+        "label" : "河西区",
+        "children" : null
+      }, {
+        "value" : "25",
+        "label" : "南开区",
+        "children" : null
+      }, {
+        "value" : "26",
+        "label" : "河北区",
+        "children" : null
+      }, {
+        "value" : "27",
+        "label" : "红桥区",
+        "children" : null
+      }, {
+        "value" : "28",
+        "label" : "东丽区",
+        "children" : null
+      }, {
+        "value" : "29",
+        "label" : "西青区",
+        "children" : null
+      }, {
+        "value" : "30",
+        "label" : "津南区",
+        "children" : null
+      }, {
+        "value" : "31",
+        "label" : "北辰区",
+        "children" : null
+      }, {
+        "value" : "32",
+        "label" : "武清区",
+        "children" : null
+      }, {
+        "value" : "33",
+        "label" : "宝坻区",
+        "children" : null
+      }, {
+        "value" : "34",
+        "label" : "滨海新区",
+        "children" : null
+      }, {
+        "value" : "35",
+        "label" : "宁河县",
+        "children" : null
+      }, {
+        "value" : "36",
+        "label" : "静海县",
+        "children" : null
+      }, {
+        "value" : "37",
+        "label" : "蓟县",
+        "children" : null
+      } ]
+    } ]
+  }
+];
+let dataTwo = [ {
+    "value" : "2",
+    "label" : "北京",
+    "children" :[ {
+        "value" : "4",
+        "label" : "东城区",
+        "children" : null
+      }, {
+        "value" : "5",
+        "label" : "西城区",
+        "children" : null
+      }, {
+        "value" : "6",
+        "label" : "朝阳区",
+        "children" : null
+      }, {
+        "value" : "7",
+        "label" : "丰台区",
+        "children" : null
+      }, {
+        "value" : "8",
+        "label" : "石景山区",
+        "children" : null
+      }, {
+        "value" : "9",
+        "label" : "海淀区",
+        "children" : null
+      }, {
+        "value" : "10",
+        "label" : "门头沟区",
+        "children" : null
+      }, {
+        "value" : "11",
+        "label" : "房山区",
+        "children" : null
+      }, {
+        "value" : "12",
+        "label" : "通州区",
+        "children" : null
+      }, {
+        "value" : "13",
+        "label" : "顺义区",
+        "children" : null
+      }, {
+        "value" : "14",
+        "label" : "昌平区",
+        "children" : null
+      }, {
+        "value" : "15",
+        "label" : "大兴区",
+        "children" : null
+      }, {
+        "value" : "16",
+        "label" : "怀柔区",
+        "children" : null
+      }, {
+        "value" : "17",
+        "label" : "平谷区",
+        "children" : null
+      }, {
+        "value" : "18",
+        "label" : "密云县",
+        "children" : null
+      }, {
+        "value" : "19",
+        "label" : "延庆县",
+        "children" : null
+      } ]
+  }, {
+    "value" : "20",
+    "label" : "天津",
+    "children" :  [ {
+        "value" : "22",
+        "label" : "和平区",
+        "children" : null
+      }, {
+        "value" : "23",
+        "label" : "河东区",
+        "children" : null
+      }, {
+        "value" : "24",
+        "label" : "河西区",
+        "children" : null
+      }, {
+        "value" : "25",
+        "label" : "南开区",
+        "children" : null
+      }, {
+        "value" : "26",
+        "label" : "河北区",
+        "children" : null
+      }, {
+        "value" : "27",
+        "label" : "红桥区",
+        "children" : null
+      }, {
+        "value" : "28",
+        "label" : "东丽区",
+        "children" : null
+      }, {
+        "value" : "29",
+        "label" : "西青区",
+        "children" : null
+      }, {
+        "value" : "30",
+        "label" : "津南区",
+        "children" : null
+      }, {
+        "value" : "31",
+        "label" : "北辰区",
+        "children" : null
+      }, {
+        "value" : "32",
+        "label" : "武清区",
+        "children" : null
+      }, {
+        "value" : "33",
+        "label" : "宝坻区",
+        "children" : null
+      }, {
+        "value" : "34",
+        "label" : "滨海新区",
+        "children" : null
+      }, {
+        "value" : "35",
+        "label" : "宁河县",
+        "children" : null
+      }, {
+        "value" : "36",
+        "label" : "静海县",
+        "children" : null
+      }, {
+        "value" : "37",
+        "label" : "蓟县",
+        "children" : null
+      } ]
+  }
+];
+let dataJidu = [ 
+    {
+    "value" : "2017",
+    "label" : "2017",
+    "children" :[ {
+        label: '一季度',
+        value: '一季度',
+    },
+    {
+        label: '二季度',
+        value: '二季度',
+    },
+    {
+        label: '三季度',
+        value: '三季度',
+    },
+    {
+        label: '四季度',
+        value: '四季度',
+    }, ]
+  },
+   {
+    "value" : "2018",
+    "label" : "2018",
+    "children" :[ {
+        label: '一季度',
+        value: '一季度',
+    },
+    {
+        label: '二季度',
+        value: '二季度',
+    } ]
+  }
+];
 export default class diffDataCalendar extends React.Component {
 
     constructor(props) {
@@ -68,10 +400,23 @@ export default class diffDataCalendar extends React.Component {
     initJidu = () => {//初始化季度数据
         // let nowYear = 1990;
         let nowYear = moment().format("YYYY");
-        for (let i = -20; i < 50; i++) {
-            years.push({ label: ([parseInt(nowYear) + i]), value: ([parseInt(nowYear) + i]) });
+        // years = [];
+        seasons = [];
+        for (let i = -2; i < 1; i++) {
+             let childrenList = [];
+            if(i == -2){
+                childrenList = jijieValue;
+            }else if (i==-1){
+                childrenList = jijieValue2;
+            }else{
+                childrenList = jijieValue;
+            }
+            // years.push({ label: ([parseInt(nowYear) + i]), value: ([parseInt(nowYear) + i]) });
+            seasons.push({ label: (parseInt(nowYear) + i)+"", value: (parseInt(nowYear) + i)+"",children:childrenList });
         }
-        seasons.push(years, jijieValue)
+        // seasons.push(years, jijieValue)
+       
+        //   seasons.push({ label: 1, value: 1,children:jijieValue1 });
     }
     dealCalendar = (day) => {
         console.log('selected day', day);
@@ -147,11 +492,14 @@ export default class diffDataCalendar extends React.Component {
                     <Picker
                         data={seasons}
                         title="选择季节"
-                        cascade={false}
-                        extra={this.state.startEndTime[0]+"-"+this.state.startEndTime[1]}
+                        // cascade={false}
+                        cols={2}
+                        value={["2018","一季度"]}
+                        // extra={this.state.startEndTime[0]+"-"+this.state.startEndTime[1]}
                         // value={this.state.sValue}
                         // onChange={v => this.setState({ sValue: v })}
-                        onOk={v => this.onChangeJidu(v)}
+                        //this.onChangeJidu(v)
+                        onOk={v => console.log("==选择季节数据=="+v)}
                     >
                         <List.Item arrow="horizontal">Multiple</List.Item>
                     </Picker>
