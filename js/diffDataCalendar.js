@@ -1,7 +1,8 @@
 //不同的时间选择器
 import { Calendar, CalendarList, Agenda,LocaleConfig } from 'react-native-calendars';
 import React from 'react';
-import { View, StyleSheet, ScrollView,TouchableOpacity,Text,Modal } from 'react-native';
+import { View, StyleSheet, ScrollView,TouchableOpacity,Text,Modal,
+    TouchableHighlight } from 'react-native';
 import moment from "moment";
 import { DatePicker, List, PickerView, Picker, Button } from 'antd-mobile';
 const now = new Date();
@@ -358,6 +359,8 @@ let dataJidu = [
     } ]
   }
 ];
+
+import CommonDialog from './commonDialog';
 export default class diffDataCalendar extends React.Component {
 
     constructor(props) {
@@ -463,6 +466,43 @@ export default class diffDataCalendar extends React.Component {
             showState : isShowState,
         });
     }
+    funcustomConfirm(){
+        var options={
+            title:'购买', /*不显示头部标题*/
+            headStyle:{backgroundColor:'#ffffff',color:'#333333',fontSize:24,
+            paddingTop:10,},
+            messText:'投资前需开通第三方存管账户',
+            buttons:[
+                {
+                   txt:'暂不投资',
+                   btnStyle:{backgroundColor:'transparent'},
+                   txtStyle:{color:'#ff6600'},
+                   onpress:this.cancels.bind(this)
+                },
+                {
+                   txt:'立即投资',
+                   btnStyle:{backgroundColor:'#ff6600'},
+                   txtStyle:{color:'#ffffff'}, 
+                   onpress:this.cok.bind(this)
+                }
+            ]		 
+         } 
+        this.refs.dcustomConfirm.show(options) 	  
+     }
+     cok(){
+       // alert("你点击了确定按钮!")  
+       console.log("您点击了确定按钮");
+     }
+     cancels(){
+       console.log("您点击了取消按钮");
+       // this.refs.dokAlert.show({
+       // 	headStyle:{backgroundColor:'#ff6600',color:'#ffffff',fontSize:24},
+       // 	messText:'确定取消投资吗？',
+       // 	buttons:[{txt:'确定',btnStyle:{backgroundColor:'transparent'},txtStyle:{color:'#ff6600'}}],
+       // 	innersWidth:300,
+       // 	innersHeight:150,
+       // 	}) 
+     }
     render() {
         return (
             <ScrollView style={styles.container}>
@@ -549,6 +589,10 @@ export default class diffDataCalendar extends React.Component {
                         </View>
                     </View>
                 </Modal> : null}
+                <TouchableHighlight style={[styles.comBtnBtnView,{width:100}]} underlayColor='transparent' onPress={this.funcustomConfirm.bind(this)}>  
+			<Text style={[styles.comBtnText]}>customconfirm</Text>  
+		  </TouchableHighlight>
+          <CommonDialog  ref="dcustomConfirm" />
             </ScrollView>
         );
     }
