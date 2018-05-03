@@ -42,8 +42,7 @@ export default class App extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome} onPress={() => { this.setState({ isShowReceiveRedEnvelope: true, }) }}>
-                    弹出Model
-        </Text>
+                    弹出Model</Text>
                 {this.state.isShowReceiveRedEnvelope ? <Modal
                     visible={this.state.isShowReceiveRedEnvelope}
                     //显示是的动画默认none
@@ -99,7 +98,7 @@ export default class App extends Component {
                             </TouchableOpacity>
                             <Text style={{ color: "#999999", fontSize: 14, marginLeft: 16 }}>
                                 {(this.state.startEndTime && this.state.startEndTime.length > 0) ?
-                                     (this.state.startEndTime[0] +" 至 "+this.state.startEndTime[1]) : "选择周范围"}
+                                    (this.state.startEndTime[0] + " 至 " + this.state.startEndTime[1]) : "选择周范围"}
                             </Text>
                             <TouchableOpacity activeOpacity={1} onPress={() => this.queryWeeksDate()} >
                                 <Text style={{ color: "#11B2F5", fontSize: 20, marginRight: 16 }}>确定</Text>
@@ -199,7 +198,7 @@ const styles = StyleSheet.create({
     instructions: {
         textAlign: 'center',
         color: '#333333',
-    }, 
+    },
     calendar: {
         borderTopWidth: 1,
         // paddingTop: 5,

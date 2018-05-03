@@ -28,23 +28,39 @@ import Calend from './js/diffDataCalendar'
 // import Calend from './js/calendardemo/calendars_yjbo'
 // import Modeldialog from './js/modeldialog';
 import Model from './js/modelceshi'
+import Monthchoose from "./js/monthchoose";
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
   android: 'Double tap R on your keyboard to reload,\n' +
     'Shake or press menu button for dev menu',
 });
+import codePush from 'react-native-code-push' 
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        center: { id: "2018-04", value: "本月" },
+        isShowReceiveRedEnvelope: false,
+    }
+}
+componentDidMount (){
+  codePush.sync();
+//   AppState.addEventListener("change", (newState) => {
+//     newState === "active" && codePush.sync();
+// });
+}
   render() {
+    let center = this.state.center;
     return (
       <View style={styles.container}>
-      <Button>你哈</Button>
+      <Button>你哈----2018年05月02日22:54:12 热更新</Button>
       <InputItem style={styles.inputItemStyle}
         placeholder={"请输入"}
         textAlign="right"
         type="digit"
-        size='small'>标题*</InputItem>
+        size='small'>标题6668888*</InputItem>
         {/* <Page1/> */}
       
         <Imagepicker/>
@@ -52,10 +68,24 @@ export default class App extends Component {
         {/* <Modeldialog/> */}
         {/* <Dialog/> */}
         <Calend/>
-        {/* <Model/> */}
+        <Model/>
         {/* <InputItemDemo/> */}
         {/* {alterFF()} */}
-
+        <Monthchoose
+          show={this.state.isShowReceiveRedEnvelope}
+          selecteddata = {center.id}
+          closeMenu={ (isShow,rowData) => {
+              let selectedMonth = center;
+              if(rowData && rowData.id && rowData.value){
+                  selectedMonth={ id : rowData.id+"", value : rowData.value+"" };
+              }
+              this.setState({
+                  isShowReceiveRedEnvelope: isShow,
+                  center:selectedMonth,
+              });
+              }}
+      />
+      
       </View>
     );
   }
