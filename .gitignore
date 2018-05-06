@@ -52,3 +52,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 ios/bundle
+android/app/src/main/java/com/yjbostudyantdesignmobile/sss.java
+android/gradle/wrapper/gradle-wrapper.properties
+android/gradlew
+android/gradlew.bat
