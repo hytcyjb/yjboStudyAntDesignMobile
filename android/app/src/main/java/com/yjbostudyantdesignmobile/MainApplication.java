@@ -14,47 +14,50 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
-    @Override
-    protected String getJSBundleFile() {
-      return CodePush.getJSBundleFile();
-    }
-    @Override
-    protected List<ReactPackage> getPackages() {
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
+
+        @Override
+        protected String getJSBundleFile() {
+            return CodePush.getJSBundleFile();
+        }
+
+        @Override
+        protected List<ReactPackage> getPackages() {
+            String key = "Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef";
+            return Arrays.<ReactPackage>asList(
+                    new MainReactPackage()
+                    , new CodePush(key,MainApplication.this,false)// Add/change this line.,
+            );
 //      return Arrays.<ReactPackage>asList(
 //      new MainReactPackage()
 //      );
-      return Arrays.<ReactPackage>asList(
-              new MainReactPackage()
-//              ,new ImagePickerPackage() // <-- add this line
-              // OR if you want to customize dialog style
-//      new ImagePickerPackage(R.style.my_dialog_style)
-      ,new CodePush(BuildConfig.CODEPUSH_KEY,//"Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef",//BuildConfig.CODEPUSH_KEY,
-                      MainApplication.this,
-                      BuildConfig.DEBUG)// Add/change this line.,
-//              "http://192.168.0.7:8081"
-        );
-    }
+//      return Arrays.<ReactPackage>asList(
+//              new MainReactPackage()
+//      ,new CodePush(BuildConfig.CODEPUSH_KEY,//"Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef",//BuildConfig.CODEPUSH_KEY,
+//                      MainApplication.this,
+//                      BuildConfig.DEBUG)// Add/change this line.,
+//        );
+        }
 
+
+        @Override
+        protected String getJSMainModuleName() {
+            return "index";
+        }
+    };
 
     @Override
-    protected String getJSMainModuleName() {
-      return "index";
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
     }
-  };
 
-  @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-  }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
+    }
 }

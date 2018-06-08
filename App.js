@@ -9,7 +9,7 @@ import {
   Platform,
   StyleSheet,
   // Text,
-  View,Alert
+  View,Alert,Image
 } from 'react-native';
 import {List, Button,Text,Popover,InputItem, } from 'antd-mobile';
 // import Yjbopopover from './js/yjbopopover';
@@ -56,6 +56,7 @@ componentDidMount (){
     return (
       <View style={styles.container}>
       <Button>你哈----2018年05月02日22:54:12 热更新</Button>
+      <Image source={ require('./img/ic_launcher.png')}/>
       <InputItem style={styles.inputItemStyle}
         placeholder={"请输入"}
         textAlign="right"

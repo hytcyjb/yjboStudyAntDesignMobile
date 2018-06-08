@@ -120,13 +120,17 @@ android {
         debug{
             //省略了其他配置
             buildConfigField "String", "CODEPUSH_KEY", '""'
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         releaseStaging {
-            buildConfigField "String", "CODEPUSH_KEY", 'qd8_6lumogjjuYcZKDM_ANLyCwCd9a1e454f-553a-45d4-9690-12b0b6cce3ef'
+//            buildConfigField "String", "CODEPUSH_KEY", 'qd8_6lumogjjuYcZKDM_ANLyCwCd9a1e454f-553a-45d4-9690-12b0b6cce3ef'
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
         release {
             //省略了其他配置
-            buildConfigField "String", "CODEPUSH_KEY", 'Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef'
+//            buildConfigField "String", "CODEPUSH_KEY", 'Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -149,9 +153,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //    compile project(':react-native-image-to-base64')
-    //    compile project(':react-native-camera')
-    //    compile project(':react-native-image-picker')
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.facebook.react:react-native:+'
     // From node_modules
