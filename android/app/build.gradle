@@ -69,7 +69,7 @@ apply plugin: "com.android.application"
  * ]
  */
 project.ext.react = [
-    entryFile: "index.js"
+        entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -114,7 +114,7 @@ android {
         }
     }
     buildTypes {
-        debug{
+        debug {
             //省略了其他配置
             buildConfigField "String", "CODEPUSH_KEY", '""'
             minifyEnabled enableProguardInReleaseBuilds
@@ -150,10 +150,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.facebook.react:react-native:+'
     // From node_modules
     compile project(':react-native-code-push')
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.facebook.react:react-native:+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:23.4.0'
 }
 
 // Run this once to be able to run the application with BUCK

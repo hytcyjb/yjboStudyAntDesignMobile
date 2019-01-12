@@ -4,18 +4,21 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Platform,
   StyleSheet,
   // Text,
-  View,Alert,Image
-} from 'react-native';
-import {List, Button,Text,Popover,InputItem,Toast,Progress } from 'antd-mobile';
+  View,
+  Alert,
+  Image,
+  TouchableOpacity
+} from "react-native";
+import { List, Button, Text, Popover, InputItem, Toast, Progress } from "antd-mobile";
 // import Yjbopopover from './js/yjbopopover';
 // import Page1 from './js/page1';
 // import Util from './js/Alter.js';
-import Imagepicker from './js/imagepicker';
+import Imagepicker from "./js/imagepicker";
 // import Datepicker from './js/datepicker';
 // import Photopage from './js/photopage';
 // import AppCopy from './js/AppCopy';
@@ -23,171 +26,181 @@ import Imagepicker from './js/imagepicker';
 // import InputItemDemo from './js/inputitemDemo'
 // import Calentar from "./js/calendardemo/calendars"
 // import PhotoUtil from './js/imagepickerutil';
-import Calend from './js/diffDataCalendar'
+import Calend from "./js/diffDataCalendar";
 // import Dialog from './js/dialogDemo';
 // import Calend from './js/calendardemo/calendars_yjbo'
 // import Modeldialog from './js/modeldialog';
-import Model from './js/modelceshi'
+import Model from "./js/modelceshi";
 import Monthchoose from "./js/monthchoose";
 const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+  ios: "Press Cmd+R to reload,\n" + "Cmd+D or shake for dev menu",
+  android: "Double tap R on your keyboard to reload,\n" + "Shake or press menu button for dev menu"
 });
-import codePush from 'react-native-code-push' 
+import codePush from "react-native-code-push";
+import ModalComponent from "./js/modalComponent";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
+    // 去处警告
+    console.disableYellowBox = true;
+    console.warn("YellowBox is disabled.");
     this.state = {
-        center: { id: "2018-04", value: "本月" },
-        isShowReceiveRedEnvelope: false,
-        percent:5,
-    }
-}
-componentDidMount (){
-  // codePush.sync();
-//   AppState.addEventListener("change", (newState) => {
-//     newState === "active" && codePush.sync();
-// });
-//Production │ Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef
-//Staging    │ qd8_6lumogjjuYcZKDM_ANLyCwCd9a1e454f-553a-45d4-9690-12b0b6cce3ef
-// var CODE_PUSH_PRODUCTION_KEY = "Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef";
-// codePush.sync({
-//   updateDialog: {
-//     appendReleaseDescription: true,
-//     descriptionPrefix:'\n\n更新内容：\n',
-//     title:'更新',
-//     mandatoryUpdateMessage:'',
-//     mandatoryContinueButtonLabel:'更新',
-//   },
-//   mandatoryInstallMode:codePush.InstallMode.IMMEDIATE,
-//   deploymentKey: CODE_PUSH_PRODUCTION_KEY,
-// })
+      center: { id: "2018-04", value: "本月" },
+      isShowReceiveRedEnvelope: false,
+      percent: 5
+    };
+  }
+  componentDidMount() {
+    // codePush.sync();
+    //   AppState.addEventListener("change", (newState) => {
+    //     newState === "active" && codePush.sync();
+    // });
+    //Production │ Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef
+    //Staging    │ qd8_6lumogjjuYcZKDM_ANLyCwCd9a1e454f-553a-45d4-9690-12b0b6cce3ef
+    // var CODE_PUSH_PRODUCTION_KEY = "Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef";
+    // codePush.sync({
+    //   updateDialog: {
+    //     appendReleaseDescription: true,
+    //     descriptionPrefix:'\n\n更新内容：\n',
+    //     title:'更新',
+    //     mandatoryUpdateMessage:'',
+    //     mandatoryContinueButtonLabel:'更新',
+    //   },
+    //   mandatoryInstallMode:codePush.InstallMode.IMMEDIATE,
+    //   deploymentKey: CODE_PUSH_PRODUCTION_KEY,
+    // })
 
-var deploymentKey = "Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef";
-codePush.checkForUpdate(deploymentKey).then((update) => {
-  if (!update) {
-      Alert.alert("提示", "已是最新版本--", [
+    var deploymentKey = "Wfq8sN4eqBk6oatEAF9lIssTkF679a1e454f-553a-45d4-9690-12b0b6cce3ef";
+    codePush.checkForUpdate(deploymentKey).then(update => {
+      if (!update) {
+        Alert.alert("提示", "已是最新版本--", [
           {
-              text: "Ok", onPress: () => {
+            text: "Ok",
+            onPress: () => {
               console.log("yjbo-点了OK");
               Toast.info("点了OK");
+            }
           }
-          }
-      ]);
-  } else {
-      codePush.sync({
-              deploymentKey: deploymentKey,
-              updateDialog: {
-                  optionalIgnoreButtonLabel: '稍后',
-                  optionalInstallButtonLabel: '立即更新',
-                  optionalUpdateMessage: '有新版本了，是否更新？',
-                  title: '更新提示'
-              },
-              installMode: codePush.InstallMode.IMMEDIATE,
-
+        ]);
+      } else {
+        codePush.sync(
+          {
+            deploymentKey: deploymentKey,
+            updateDialog: {
+              optionalIgnoreButtonLabel: "稍后",
+              optionalInstallButtonLabel: "立即更新",
+              optionalUpdateMessage: update.description,
+              title: "更新提示"
+            },
+            installMode: codePush.InstallMode.IMMEDIATE
           },
-          (status) => {
-              switch (status) {
-                  case codePush.SyncStatus.DOWNLOADING_PACKAGE:
-                      console.log("yjbo-DOWNLOADING_PACKAGE");
-                      Toast.info("DOWNLOADING_PACKAGE");
-                      break;
-                  case codePush.SyncStatus.INSTALLING_UPDATE:
-                      console.log("yjbo-INSTALLING_UPDATE");
-                      Toast.info("INSTALLING_UPDATE");
-                      break;
-              }
+          status => {
+            switch (status) {
+              case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+                console.log("yjbo-DOWNLOADING_PACKAGE");
+                Toast.info("DOWNLOADING_PACKAGE");
+                break;
+              case codePush.SyncStatus.INSTALLING_UPDATE:
+                console.log("yjbo-INSTALLING_UPDATE");
+                Toast.info("INSTALLING_UPDATE");
+                break;
+            }
           },
-          (progress) => {//275412
-           var p = (progress.receivedBytes / progress.totalBytes ) * 100;
-           console.log("yjbo-"+progress.receivedBytes + " of " + progress.totalBytes + " received.");
+          progress => {
+            //275412
+            var p = (progress.receivedBytes / progress.totalBytes) * 100;
+            console.log("yjbo-" + progress.receivedBytes + " of " + progress.totalBytes + " received.");
             this.setState({ percent: p });
           }
-      );
+        );
+      }
+    });
+
+    //页面加载完成 允许重启
+    codePush.allowRestart();
+
+    codePush.notifyAppReady();
   }
-})
-}
   render() {
     let center = this.state.center;
     return (
       <View style={styles.container}>
-      <Button>你哈----2018年06月10日18:05:06 热更新</Button>
-      <Image source={ require('./img/ic_launcher.png')}/>
-      <View style={{ marginRight: 10, height: 4, flex: 1 }}>
-            <Progress percent={this.state.percent} />
-          </View>
-      <InputItem style={styles.inputItemStyle}
-        placeholder={"请输入"}
-        textAlign="right"
-        type="digit"
-        size='small'>标题6668888*
-          我又修改了哦
+        <Button>你哈--杨建波大混蛋--2019年01月11日20:43:39 热更新</Button>
+        <TouchableOpacity
+          onPress={() => {
+            this.refs.dcustomConfirm.show();
+          }}>
+          <Image source={require("./img/ic_launcher.png")} />
+        </TouchableOpacity>
+        <View style={{ marginRight: 10, height: 4, flex: 1 }}>
+          <Progress percent={this.state.percent} />
+        </View>
+        <InputItem style={styles.inputItemStyle} placeholder={"请输入"} textAlign="right" type="digit" size="small">
+          标题6668888* 我又修改了哦
         </InputItem>
         {/* <Page1/> */}
-      
-        <Imagepicker/>
+
+        <Imagepicker />
         {/* <PhotoUtil/> */}
         {/* <Modeldialog/> */}
         {/* <Dialog/> */}
-        <Calend/>
-        <Model/>
+        <Calend />
+        <Model />
+        <ModalComponent ref="dcustomConfirm" />
         {/* <InputItemDemo/> */}
         {/* {alterFF()} */}
         <Monthchoose
           show={this.state.isShowReceiveRedEnvelope}
-          selecteddata = {center.id}
-          closeMenu={ (isShow,rowData) => {
-              let selectedMonth = center;
-              if(rowData && rowData.id && rowData.value){
-                  selectedMonth={ id : rowData.id+"", value : rowData.value+"" };
-              }
-              this.setState({
-                  isShowReceiveRedEnvelope: isShow,
-                  center:selectedMonth,
-              });
-              }}
-      />
-      
+          selecteddata={center.id}
+          closeMenu={(isShow, rowData) => {
+            let selectedMonth = center;
+            if (rowData && rowData.id && rowData.value) {
+              selectedMonth = { id: rowData.id + "", value: rowData.value + "" };
+            }
+            this.setState({
+              isShowReceiveRedEnvelope: isShow,
+              center: selectedMonth
+            });
+          }}
+        />
       </View>
     );
   }
 }
 
-function alterFF (){
+function alterFF() {
   Alert.alert(
-    'Alert Title',
-    'My Alert Msg',
+    "Alert Title",
+    "My Alert Msg",
     [
-      {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
-      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
-    ],
+      { text: "Ask me later", onPress: () => console.log("Ask me later pressed") },
+      { text: "Cancel", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+      { text: "OK", onPress: () => console.log("OK Pressed") }
+    ]
     // { cancelable=false }
-  )
-};
+  );
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
   },
   welcome: {
     fontSize: 20,
-    margin: 10,
+    margin: 10
   },
   instructions: {
-    color: '#333333',
-    marginBottom: 5,
+    color: "#333333",
+    marginBottom: 5
   },
   inputItemStyle: {
-    color: '#333333',
+    color: "#333333",
     marginBottom: 5,
-    backgroundColor:"white",
-    textAlign:"center",
-    justifyContent:"space-between"
-  },
+    backgroundColor: "white",
+    textAlign: "center",
+    justifyContent: "space-between"
+  }
 });

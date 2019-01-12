@@ -27,6 +27,10 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
+//            String key = getResources().getString(R.string.reactNativeCodePush_androidStagingKey);
+//            return Arrays.<ReactPackage>asList(
+//                    new MainReactPackage(), new CodePush(key,MainApplication.this,BuildConfig.DEBUG)
+//            );
             String key = getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey);
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(), new CodePush(key,MainApplication.this,BuildConfig.DEBUG)
